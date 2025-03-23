@@ -1,37 +1,90 @@
-import Link from "next/link";
+import { Header } from "~/components/header"
+import { Sidebar } from "~/components/sidebar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
+import { mockProjects, mockFeatureToggles } from "~/lib/mock-data"
+import { BarChart3, Flag, Layers, TrendingUp } from "lucide-react"
+import Link from "next/link"
 
-export default function HomePage() {
+export default function Home() {
+  const activeToggles = mockFeatureToggles.filter((toggle) => toggle.enabled).length
+  const totalToggles = mockFeatureToggles.length
+  const totalProjects = mockProjects.length
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <div className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Header showSearch={false} showCreateButton={false} />
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="grid gap-6">
+            <h2 className="text-2xl font-bold">Dashboard</h2>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium">Active Toggles</CardTitle>
+                  <Flag className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{activeToggles}</div>
+                  <p className="text-xs text-muted-foreground">of {totalToggles} total toggles</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium">Projects</CardTitle>
+                  <Layers className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{totalProjects}</div>
+                  <p className="text-xs text-muted-foreground">across your organization</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium">Toggle Evaluations</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">12.5k</div>
+                  <p className="text-xs text-muted-foreground">in the last 24 hours</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium">Stale Toggles</CardTitle>
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">1</div>
+                  <p className="text-xs text-muted-foreground">toggle needs review</p>
+                </CardContent>
+              </Card>
             </div>
-          </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
+
+            <h3 className="text-xl font-semibold mt-4">Recent Projects</h3>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {mockProjects.map((project) => (
+                <Link href={`/projects/${project.id}`} key={project.id}>
+                  <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+                    <CardHeader>
+                      <CardTitle>{project.name}</CardTitle>
+                      <CardDescription>{project.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-muted-foreground">{project.toggleCount} feature toggles</div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
             </div>
-          </Link>
-        </div>
+          </div>
+        </main>
       </div>
-    </main>
-  );
+    </div>
+  )
 }
+
